@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS UsersQuote (
+    quoteID INT AUTO_INCREMENT PRIMARY KEY,
+    likes INT DEFAULT 0,
+    dislikes INT DEFAULT 0,
+    quoteText VARCHAR(255) NOT NULL,
+    userID INT
+);
