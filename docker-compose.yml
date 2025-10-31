@@ -1,0 +1,71 @@
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: quotesenderapi
+    ports:
+      - "3307:3306" # порт на хосте 3307, внутри контейнера 3306 | 3306:3306
+    networks:
+      - quotes-network
+
+  eureka-server:
+    build: ./eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - quotes-network
+
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      - eureka-server
+    networks:
+      - quotes-network
+
+  user-service:
+    build: ./user-service
+    ports:
+      - "8081:8081"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/quotesenderapi
+    depends_on:
+      - mysql
+      - eureka-server
+    networks:
+      - quotes-network
+
+  quote-service:
+    build: ./quote-service
+    ports:
+      - "8082:8082"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/quotesenderapi
+    depends_on:
+      - mysql
+      - eureka-server
+    networks:
+      - quotes-network
+
+  vote-service:
+    build: ./vote-service
+    ports:
+      - "8083:8083"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/quotesenderapi
+    depends_on:
+      - mysql
+      - eureka-server
+    networks:
+      - quotes-network
+
+networks:
+  quotes-network:
+    driver: bridge
