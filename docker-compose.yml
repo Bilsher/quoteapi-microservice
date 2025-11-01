@@ -22,8 +22,6 @@ services:
       - "8080:8080"
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
-    depends_on:
-      - eureka-server
     networks:
       - quotes-network
 
@@ -34,9 +32,6 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/quotesenderapi
-    depends_on:
-      - mysql
-      - eureka-server
     networks:
       - quotes-network
 
@@ -47,9 +42,6 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/quotesenderapi
-    depends_on:
-      - mysql
-      - eureka-server
     networks:
       - quotes-network
 
@@ -60,9 +52,6 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/quotesenderapi
-    depends_on:
-      - mysql
-      - eureka-server
     networks:
       - quotes-network
 
