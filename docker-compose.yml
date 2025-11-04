@@ -8,6 +8,11 @@ services:
       - "3307:3306" # порт на хосте 3307, внутри контейнера 3306 | 3306:3306
     networks:
       - quotes-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   eureka-server:
     build: ./eureka-server
@@ -27,6 +32,9 @@ services:
 
   user-service:
     build: ./user-service
+    depends_on:
+      mysql:
+        condition: service_healthy
     ports:
       - "8081:8081"
     environment:
@@ -37,6 +45,9 @@ services:
 
   quote-service:
     build: ./quote-service
+    depends_on:
+      mysql:
+        condition: service_healthy
     ports:
       - "8082:8082"
     environment:
@@ -47,6 +58,9 @@ services:
 
   vote-service:
     build: ./vote-service
+    depends_on:
+      mysql:
+        condition: service_healthy
     ports:
       - "8083:8083"
     environment:

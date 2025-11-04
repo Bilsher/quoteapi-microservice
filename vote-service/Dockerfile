@@ -1,6 +1,14 @@
-FROM openjdk:21-jdk-slim
+FROM maven:3.9.9-eclipse-temurin-21-jammy AS build
 WORKDIR /app
-COPY target/vote-service-0.0.1-SNAPSHOT.jar app.jar
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+FROM eclipse-temurin:21-jdk
+WORKDIR /app
+
+COPY --from=build /app/target/*.jar app.jar
+
 RUN apt-get update && apt-get install -y curl \
     && curl -o wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh \
     && chmod +x wait-for-it.sh \
