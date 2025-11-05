@@ -20,8 +20,22 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Build with Maven
-        run: mvn -B clean package -DskipTests
+      # Сборка каждого микросервиса по отдельности
+      - name: Build eureka-server
+        run: mvn -B clean package -DskipTests -f eureka-server/pom.xml
 
+      - name: Build api-gateway
+        run: mvn -B clean package -DskipTests -f api-gateway/pom.xml
+
+      - name: Build quote-service
+        run: mvn -B clean package -DskipTests -f quote-service/pom.xml
+
+      - name: Build user-service
+        run: mvn -B clean package -DskipTests -f user-service/pom.xml
+
+      - name: Build vote-service
+        run: mvn -B clean package -DskipTests -f vote-service/pom.xml
+
+      # После успешной сборки всех сервисов собираем Docker-образы
       - name: Build Docker images
         run: docker-compose build
