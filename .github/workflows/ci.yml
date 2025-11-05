@@ -20,22 +20,18 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      # Сборка каждого микросервиса по отдельности
-      - name: Build eureka-server
-        run: mvn -B clean package -DskipTests -f eureka-server/pom.xml
+      - name: Build all microservices
+        run: |
+          cd api-gateway && mvn -B clean package -DskipTests && cd ..
+          cd user-service && mvn -B clean package -DskipTests && cd ..
+          cd quote-service && mvn -B clean package -DskipTests && cd ..
+          cd vote-service && mvn -B clean package -DskipTests && cd ..
+          cd eureka-server && mvn -B clean package -DskipTests && cd ..
 
-      - name: Build api-gateway
-        run: mvn -B clean package -DskipTests -f api-gateway/pom.xml
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
 
-      - name: Build quote-service
-        run: mvn -B clean package -DskipTests -f quote-service/pom.xml
-
-      - name: Build user-service
-        run: mvn -B clean package -DskipTests -f user-service/pom.xml
-
-      - name: Build vote-service
-        run: mvn -B clean package -DskipTests -f vote-service/pom.xml
-
-      # После успешной сборки всех сервисов собираем Docker-образы
       - name: Build Docker images
         run: docker-compose build
